@@ -10,9 +10,9 @@ NAVY="#00172f"
 FOREGROUND=CREAM
 BACKGROUND=NAVY
 
-def ring(im, origin, radius, thickness=2, margin=0, color=FOREGROUND):
+def ring(im, origin, radius, thickness=2, color=FOREGROUND):
   outer_box = (origin[0]-radius,origin[1]-radius,origin[0]+radius,origin[1]+radius)
-  outer_ring = tuple(np.array(outer_box)+np.array([margin-thickness,margin-thickness,thickness-margin,thickness-margin]))
+  outer_ring = tuple(np.array(outer_box)+np.array([-thickness,-thickness,thickness,thickness]))
   inner_ring = tuple(
     np.array(outer_ring)
     + 
@@ -49,6 +49,28 @@ def circlet(im, origin, radius, thickness=5, num=13, dotrad=15, border=5, fore=F
   for point in points:
     im = dot(im, point, radius=3*thickness,border=thickness, color=fore, bordercolor=back)
   return im
+
+
+def scaledring(im, origin, radius, scale=0.4, thickness=5, color=FOREGROUND):
+  cream_all = Image.new("RGBA", im.size, color)
+  height = radius*0.4
+  outer_box = (origin[0]-radius, origin[1]-height, origin[0]+radius, origin[1]+height)
+  outer_ring = tuple(np.array(outer_box)+np.array([-thickness,-thickness,thickness,thickness]))
+  inner_ring = tuple(
+    np.array(outer_ring)
+    +
+    np.array([thickness*2,thickness*2,-thickness*2, -thickness*2])
+    +
+    np.array([0,-thickness*scale,0,-thickness*scale ])
+    )
+  mask = Image.new("1", im.size, 1)
+  
+  draw = ImageDraw.Draw(mask)
+  draw.ellipse(outer_ring, fill=0 )
+  draw.ellipse(inner_ring, fill=1 )
+  del draw
+  return Image.composite(im,cream_all,mask)
+
 
 if __name__ == "__main__":
   im = Image.new("RGBA", (600,400), BACKGROUND)
