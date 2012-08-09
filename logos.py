@@ -74,5 +74,6 @@ def scaledring(im, origin, radius, scale=0.4, thickness=5, color=FOREGROUND):
 
 if __name__ == "__main__":
   im = Image.new("RGBA", (600,400), BACKGROUND)
+#  im = scaledring(im, (300,200), 150, scale=1.5, thickness=2, color = FOREGROUND)
   im = circlet(im, (300,200), 150, fore = FOREGROUND, back = BACKGROUND)
   im.save("try.png")
